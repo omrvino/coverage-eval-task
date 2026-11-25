@@ -2,7 +2,7 @@
 
 A model is asked to raise test coverage on a small billing library. Coverage is easy to raise with tests that run code and check nothing. This task scores whether the tests would notice a bug.
 
-It comes from a failure I hit while directing coding agents on a production codebase: agents wrote thousands of lines of tests whose only effect was to move the coverage number. No code from that project is used here. I chose the failure and the approach; Claude Code worked out the details and wrote the code under my direction.
+It comes from a failure I hit while directing coding agents on a production codebase: agents wrote thousands of lines of tests whose only effect was to move the coverage number. No code from that project is used here. The failure is mine and I approved the plan. Claude Code designed the task and grader, wrote the code, ran the experiments and drafted this README.
 
 ## The task
 
@@ -54,15 +54,15 @@ Early versions paid the random and source-search cheats a few points. Calibratio
 - **The prompt mattered as much as the model.** No run wrote a fully hollow suite. Coverage-only runs get no total score because their prompt asked for no findings list.
 - **What coverage-only runs did:** both Haiku runs imported an unused private helper and tested it directly, which covers it and proves nothing. One spotted eight contradictions, then chose inputs that avoid them and explained this in its report.
 - **What full-prompt runs missed:** most often, that reversing a payment must not make old late fees chargeable again (5 of 6 runs), and that an invoice can owe only fees after a reversal (4 of 6). One run called the second case unreachable.
-- **The runs improved the task.** They found contradictions I had left in by accident. One is now scored. Reporting the others is neither rewarded nor punished, and the spec wording on most of them was clarified after the runs.
+- **The runs improved the task.** They found contradictions that Claude Code had left in by accident. One is now scored. Reporting the others is neither rewarded nor punished, and the spec wording on most of them was clarified after the runs.
 
 ## Limits
 
-- Opus scores 98 to 100, so the task is too easy for the strongest model. Next I would make the spec longer and less tidy, and add more multi-step bugs.
+- Opus scores 98 to 100, so the task is too easy for the strongest model. The next step is a longer, less tidy spec and more multi-step bugs.
 - Samples are small: one or two runs per cell, Claude only, not run on Gemini. Runs were on Windows with Python 3.12.
 - The runs were not in a clean room. They inherited my global agent instructions, which push toward honest testing. The grader folder's path was visible to the agents, but a search of all nine transcripts found no tool call that names it.
-- A harness rule stopped five of the six full-prompt runs from writing `FINDINGS.md`. I saved the text from their reports unchanged.
-- I added the multi-step bugs after the first run scored too high. They were written from the spec before I read any run's tests.
+- A harness rule stopped five of the six full-prompt runs from writing `FINDINGS.md`. Claude Code saved the text from their reports unchanged.
+- Claude Code added the multi-step bugs after the first graded run scored 99. It wrote them from the spec, without opening any run's tests, but it had already read three runs' final reports and that run's grade, including which bug it missed. That missed bug stayed in the one-rule set.
 - A test that inspects a live function's bytecode could still cheat. The grader notes such files for a person to read.
 
 ## Run it

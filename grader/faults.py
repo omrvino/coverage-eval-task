@@ -47,7 +47,7 @@ SHIPPED = [
        "    for row in reader:\n        line = reader.line_num\n",
        "    rows = [row for row in reader if any(cell.strip() for cell in row)]\n"
        "    for line, row in enumerate(rows, start=2):\n")),
-    # Not planted. I left this one in by accident and the first agent runs found it.
+    # Not planted. Left in by accident; the first agent runs found it.
     F("S9", "R9.4", "a file that is not UTF-8 raises UnicodeDecodeError",
       ("store.py", "    except (json.JSONDecodeError, UnicodeDecodeError):\n", "    except json.JSONDecodeError:\n")),
 ]
@@ -194,8 +194,8 @@ HIDDEN = [
 _PAID_BEFORE = "any(a.invoice == {} for p in self.payments.values() for a in p.allocations)"
 
 # Bugs that show only across several steps: pay then reverse, charge then pay then
-# charge, save then load then carry on. Written from the spec, before looking at any
-# submission's tests.
+# charge, save then load then carry on. Written from the spec without opening any
+# submission's tests, but after reading three runs' reports and one run's grade.
 DEEP = [
     F("D01", "R4.8", "a reversed payment still blocks the early-payment discount",
       ("ledger.py", "if discounts else Decimal(\"0.00\")\n",
