@@ -21,12 +21,14 @@
  "tests": 548,
  "invalid_tests": [],
  "hollow_tests": [],
+ "read_by_hand": [],
+ "failed_runs": 0,
  "ci_gate": {
   "passed": true,
   "line": 99.6,
   "branch": 99.3,
   "failing": [],
-  "fail_under": 93,
+  "fail_under": 93.0,
   "source_changed": false,
   "problem": ""
  },

@@ -41,7 +41,7 @@ def _checks_something(node, helpers, seen=frozenset()):
                 kinds = {_n for a in child.args for _n in _names(a)}
                 if kinds and not kinds & {"Exception", "BaseException"}:
                     return True
-            elif name == "fail" or name.startswith("assert"):
+            elif name == "fail" or (isinstance(child.func, ast.Attribute) and name.startswith("assert")):
                 return True
             elif name in helpers and name not in seen:
                 if _checks_something(helpers[name], helpers, seen | {name}):

@@ -1,0 +1,10 @@
+- R1.2: `money` rounds ties away from zero (`2.665` becomes `2.67`), and the spec says half to even (`2.66`)
+- R2.4: the discount deadline moves forward past weekends and holidays, and the spec says it does not move
+- R3.2: tax is rounded on each taxable line and the results added up, and the spec says it is computed and rounded once on the sum of the taxable line nets
+- R4.1: invoices with equal due dates go in plain text order (`INV-10` before `INV-2`), and the spec says digit runs are compared as numbers
+- R4.3: the discount is still granted when an earlier payment on the invoice went only to late fees, and the spec says an invoice with any earlier payment on it gets no discount
+- R4.8: `reverse` leaves the early-payment discount on the invoice, and the spec says the discount a payment earned is undone with it
+- R5.1: a fee is charged at exactly 5 days late, and the spec says no fee until day 6
+- R6.3: credit reduces the newest bucket first (`current`, then `1-30`, and so on), and the spec says the oldest bucket first
+- R8.2: blank lines are left out of the count, so rejected rows after one get too low a line number, and the spec says blank lines count
+- R9.4: a file that is not valid UTF-8 raises `UnicodeDecodeError`, and the spec says a file that is not JSON raises `StoreError`

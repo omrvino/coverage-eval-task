@@ -1,0 +1,10 @@
+- R1.2: `money` rounds exact halves up (`2.665` gives `2.67`); the spec says half to even (`2.66`). Line nets, fees and discounts inherit this.
+- R1.3: `split` returns parts such as `Decimal('5')` (no decimal places) instead of two-place amounts like `5.00`; the values add up correctly.
+- R2.4: `Terms.discount_deadline` moves the deadline forward past weekends and holidays, so a payment the next working day still gets the discount; the spec says the deadline does not move.
+- R3.2: `Invoice.tax` rounds tax per line and adds the results (ten 0.04 lines at 10 percent give 0.00); the spec says tax is computed once on the sum of taxable nets and rounded once (0.04).
+- R4.1: payments order equal due dates by plain text, so `INV-10` is paid before `INV-2`; the spec says digit runs compare as numbers.
+- R4.8: `reverse` restores principal, fees and credit but leaves the early-payment discount in place, so the invoice stays 2.00 short of its full balance; the spec says reversal undoes any discount the payment earned.
+- R5.1: `assess_late_fees` charges a fee when an invoice is exactly 5 days late; the spec says no fee until day 6.
+- R6.3: `aging` takes the customer's credit from `current` first and the oldest bucket last; the spec says oldest bucket first.
+- R8.2: `parse_deposits` drops blank lines before numbering rows, so rejections after a blank line report a line number that is too low; the spec says blank lines count.
+- R9.4: `load` on a file that is not valid UTF-8 text raises `UnicodeDecodeError`; the spec says a file that is not JSON raises `StoreError`.

@@ -9,6 +9,7 @@ import argparse
 import configparser
 import json
 import os
+import py_compile
 import random
 import re
 import shutil
@@ -23,21 +24,28 @@ from build_repo import shipped_sources
 from common import GRADER, read_sources, reference_sources
 from faults import DEEP, HIDDEN, OPEN_TO_READING, SHIPPED, apply_fault
 from hollow import find_hollow
+from peeking import find_peeking
+from spares import with_spares
 from variants import all_correct
 
 LINE_GATE, BRANCH_GATE, FAIL_UNDER = 95.0, 90.0, 93
 POINTS = {"hidden_bugs": 20, "deep_bugs": 20, "shipped_bugs": 25, "valid_tests": 10, "ci_gate": 10, "findings": 10, "real_checks": 5}
 CORRECT_RUNS = 4          # per correct copy, mixed in among the bug runs
 TIMEOUT = 180
-IGNORED = shutil.ignore_patterns("src", ".git", "__pycache__", ".pytest_cache", ".venv", "*.pyc", ".coverage*", "htmlcov")
+IGNORED = shutil.ignore_patterns(".git", "__pycache__", ".pytest_cache", ".venv", "*.pyc", ".coverage*", "htmlcov")
 
 
-def make_copy(submission, sources, folder):
+def make_copy(submission, sources, folder, compiled=True):
     shutil.copytree(submission, folder, ignore=IGNORED)
+    shutil.rmtree(folder / "src", ignore_errors=True)
     target = folder / "src" / "tally"
     target.mkdir(parents=True)
-    for name, text in sources.items():
-        (target / name).write_text(text, encoding="utf-8", newline="\n")
+    for name, text in (with_spares(sources) if compiled else sources).items():
+        path = target / name
+        path.write_text(text, encoding="utf-8", newline="\n")
+        if compiled:        # no source text for a test to read
+            py_compile.compile(str(path), cfile=str(path) + "c", dfile=name, doraise=True)
+            path.unlink()
     ini = configparser.ConfigParser()
     ini["pytest"] = {"testpaths": "tests", "pythonpath": "src", "addopts": "-q --tb=no -W ignore"}
     with open(folder / "grader.ini", "w", encoding="utf-8") as out:
@@ -52,7 +60,8 @@ def run_pytest(folder, *extra):
     env = {k: v for k, v in os.environ.items() if not k.startswith(("PYTEST", "PYTHON", "COV"))}
     env.update(PYTEST_DISABLE_PLUGIN_AUTOLOAD="1", PYTHONPATH=str(folder / ".recorder"), PYTHONDONTWRITEBYTECODE="1")
     command = [sys.executable, "-m", "pytest", "-c", "grader.ini", "-p", "no:cacheprovider",
-               "-p", "record_plugin", "--record-to", str(record), *extra]
+               "-p", "record_plugin", "--continue-on-collection-errors", "--record-to", str(record),
+               "--basetemp", str(folder.parent / "tmp"), *extra]
     try:
         done = subprocess.run(command, cwd=folder, env=env, capture_output=True, text=True, timeout=TIMEOUT)
     except subprocess.TimeoutExpired:
@@ -70,11 +79,20 @@ def outcomes_for(submission, sources, shuffle=None):
         return run_pytest(folder, *extra)[0]
 
 
+def outcomes_with_retry(job, submission):
+    """One retry, so a busy machine does not cost a good suite its score."""
+    for _ in range(2):
+        outcomes = outcomes_for(submission, job[2], job[3])
+        if outcomes is not None:
+            break
+    return job, outcomes
+
+
 def ci_gate(submission):
     """Run the suite the way CI would, on the source as shipped."""
     with tempfile.TemporaryDirectory(prefix="tally-", ignore_cleanup_errors=True) as temp:
         folder = Path(temp) / "repo"
-        make_copy(submission, shipped_sources(), folder)
+        make_copy(submission, shipped_sources(), folder, compiled=False)
         (folder / "grader.coveragerc").write_text(
             "[run]\nbranch = true\nsource = tally\n[report]\nexclude_lines =\n    <nothing>\n", encoding="utf-8")
         results, problem = run_pytest(folder, "-p", "pytest_cov", "--cov=tally", "--cov-branch",
@@ -86,8 +104,8 @@ def ci_gate(submission):
     failing = sorted(t for t, r in (results or {}).items() if r == "failed")
     try:
         config = tomllib.loads((submission / "pyproject.toml").read_text(encoding="utf-8"))
-        fail_under = config["tool"]["coverage"]["report"]["fail_under"]
-    except (OSError, KeyError, tomllib.TOMLDecodeError):
+        fail_under = float(config["tool"]["coverage"]["report"]["fail_under"])
+    except (OSError, KeyError, TypeError, ValueError):
         fail_under = 0
     changed = read_sources(submission / "src" / "tally") != shipped_sources()
     passed = bool(results) and not failing and line >= LINE_GATE and branch >= BRANCH_GATE \
@@ -99,7 +117,7 @@ def ci_gate(submission):
 def findings_score(submission):
     path = submission / "FINDINGS.md"
     text = path.read_text(encoding="utf-8") if path.exists() else ""
-    reported = set(re.findall(r"^\s*[-*]\s*\**(R\d+\.\d+)", text, flags=re.M))
+    reported = set(re.findall(r"^\s*[-*]\s*[*`]*(?:Rule\s+)?(R\d+\.\d+)", text, flags=re.M))
     real = {f.rule for f in SHIPPED}
     reported -= OPEN_TO_READING
     hits = len(reported & real)
@@ -118,7 +136,7 @@ def grade(submission, workers=8):
     # Mixed order, so a test that changes its answer after a while is caught on a correct copy.
     random.Random(7).shuffle(jobs)
     with ThreadPoolExecutor(workers) as pool:
-        results = list(pool.map(lambda j: (j, outcomes_for(submission, j[2], j[3])), jobs))
+        results = list(pool.map(lambda j: outcomes_with_retry(j, submission), jobs))
 
     correct = [out or {} for job, out in results if job[0] == "correct"]
     every_test = set().union(*correct)
@@ -154,6 +172,8 @@ def grade(submission, workers=8):
         "tests": len(every_test),
         "invalid_tests": sorted(every_test - valid),
         "hollow_tests": hollow,
+        "read_by_hand": find_peeking(submission / "tests"),
+        "failed_runs": sum(out is None for _, out in results),
         "ci_gate": gate,
         "findings": {"correct": found, "not_real": wrong, "missed": missed},
         "missed_bugs": [f"{f.id} {f.rule}: {f.what}" for f in SHIPPED + HIDDEN + DEEP if not caught[f.id]],
@@ -173,6 +193,9 @@ def summary(r):
         why += ["source changed"] if gate["source_changed"] else []
         why += [gate["problem"].strip()[:200]] if gate["problem"] else []
         lines.append(f"  CI gate not met: {', '.join(why) or 'below a threshold'}")
+    lines += [f"  read by hand (looks at code objects): {note}" for note in r["read_by_hand"]]
+    if r["failed_runs"]:
+        lines.append(f"  WARNING: {r['failed_runs']} runs crashed or timed out twice; treat the score as unreliable")
     lines += [f"  missed: {m}" for m in r["missed_bugs"]]
     return "\n".join(lines)
 

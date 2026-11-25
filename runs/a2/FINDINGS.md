@@ -1,0 +1,9 @@
+- R1.2: `money()` rounds halves up, so `money("2.665")` is 2.67 and `money("0.125")` is 0.13; the spec says half to even, giving 2.66 and 0.12.
+- R2.4: `discount_deadline()` moves a Sunday or holiday deadline forward (Jan 18 2026 becomes Jan 19), so a payment on Jan 19 still gets the discount; the spec says the deadline does not move.
+- R3.2: tax is rounded per taxable line and then summed (two 0.05 lines at 10% give 0.02); the spec says tax is computed once on the summed taxable nets, giving 0.01.
+- R4.1: invoices with the same due date are ordered as plain text, so INV-10 is paid before INV-2; the spec says digit runs compare as numbers.
+- R4.8: `reverse()` does not restore the early-payment discount, so after reversing a discounted payment the invoice still shows the discount as taken (balance 98.00 instead of 100.00); the spec says the discount is undone too.
+- R5.1: a late fee is charged on the 5th day past due (15.00 on a 1000.00 invoice); the spec says no fee at 5 days late or less.
+- R6.3: credit reduces the `current` bucket first and the older buckets last; the spec says the oldest bucket first.
+- R8.2: line numbers do not count blank lines, so a bad row after one blank line is reported as line 2 instead of 3; the spec says blank lines count.
+- R9.4: a file that is not valid UTF-8 raises `UnicodeDecodeError` instead of `StoreError`; the spec says a file that is not JSON raises `StoreError`.

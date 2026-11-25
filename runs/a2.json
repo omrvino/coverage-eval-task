@@ -24,12 +24,14 @@
   "test_invoice.py::test_negative_unit_price_is_allowed_on_a_line",
   "test_ledger.py::test_aging_runs"
  ],
+ "read_by_hand": [],
+ "failed_runs": 0,
  "ci_gate": {
   "passed": true,
   "line": 99.6,
   "branch": 99.3,
   "failing": [],
-  "fail_under": 93,
+  "fail_under": 93.0,
   "source_changed": false,
   "problem": ""
  },

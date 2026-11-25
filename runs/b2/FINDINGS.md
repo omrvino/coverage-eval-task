@@ -1,0 +1,10 @@
+- R1.2: `money` rounds exact halves up (`money("2.665")` is 2.67); the spec says half to even (2.66).
+- R1.3: `split` returns whole-unit parts without cents (`split("10.00", [1, 1])` gives `Decimal('5')`); the spec says all money has two places.
+- R2.4: the early-payment discount deadline moves forward past weekends and holidays, so a payment on the Monday after a Saturday deadline still gets the discount; the spec says the deadline does not move.
+- R3.2: tax is rounded on each taxable line and the results added (three 1.00 lines at 8.25 percent give 0.24); the spec says tax is computed once on the sum and rounded once (0.25).
+- R4.1: invoices with equal due dates are ordered by the plain text of the number (`INV-10` before `INV-2`); the spec compares digit runs as numbers (`INV-2` first).
+- R4.8: `reverse` leaves the early-payment discount in place, so the invoice stays short by the discount after the reversal; the spec says it undoes the discount the payment earned.
+- R5.1: a late fee is charged at exactly 5 days late; the spec says no fee until day 6.
+- R6.3: `aging` takes the customer's credit off `current` first and the oldest bucket last; the spec says oldest first.
+- R8.2: rejected-row line numbers do not count blank lines; the spec says blank lines count.
+- R9.4: `load` on a file that is not valid UTF-8 text raises `UnicodeDecodeError`; the spec says a file that is not JSON raises `StoreError`.

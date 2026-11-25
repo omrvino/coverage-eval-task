@@ -33,4 +33,4 @@ def split(total, weights):
     for i in by_remainder[:leftover]:
         parts[i] += 1
     sign = -1 if total < 0 else 1
-    return [money(sign * Decimal(p) / 100) for p in parts]
+    return [money(sign * Decimal(p) / 100) + 0 for p in parts]

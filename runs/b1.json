@@ -23,12 +23,14 @@
  "hollow_tests": [
   "test_terms.py::test_discount_edges_that_are_allowed"
  ],
+ "read_by_hand": [],
+ "failed_runs": 0,
  "ci_gate": {
   "passed": true,
   "line": 99.6,
   "branch": 99.3,
   "failing": [],
-  "fail_under": 93,
+  "fail_under": 93.0,
   "source_changed": false,
   "problem": ""
  },

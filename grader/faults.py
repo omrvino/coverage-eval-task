@@ -59,7 +59,7 @@ UNSCORED = [
     F("U3", "R4.3", "discount still granted when the earlier payment covered only late fees",
       ("invoice.py", "on > deadline or self.paid or self.fees_paid:", "on > deadline or self.paid:")),
     F("U1", "R1.3", "split can return a Decimal without two places",
-      ("money.py", "    return [money(sign * Decimal(p) / 100) for p in parts]\n",
+      ("money.py", "    return [money(sign * Decimal(p) / 100) + 0 for p in parts]\n",
        "    return [sign * Decimal(p) / 100 for p in parts]\n")),
     F("U2", "R8.5", "single-digit months and days accepted",
       ("importer.py",

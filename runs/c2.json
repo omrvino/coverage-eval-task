@@ -1,0 +1,58 @@
+{
+ "score": 98.1,
+ "points": {
+  "hidden_bugs": 20.0,
+  "deep_bugs": 18.5,
+  "shipped_bugs": 25.0,
+  "valid_tests": 9.7,
+  "ci_gate": 10.0,
+  "findings": 10.0,
+  "real_checks": 4.9
+ },
+ "share": {
+  "hidden_bugs": 1.0,
+  "deep_bugs": 0.926,
+  "shipped_bugs": 1.0,
+  "valid_tests": 0.974,
+  "ci_gate": 1.0,
+  "findings": 1.0,
+  "real_checks": 0.971
+ },
+ "tests": 646,
+ "invalid_tests": [
+  "tests/test_payments.py::test_r4_9_later_credit_does_not_make_up_for_used_credit"
+ ],
+ "hollow_tests": [
+  "test_terms.py::test_r2_5_limits_that_are_still_allowed"
+ ],
+ "read_by_hand": [],
+ "failed_runs": 0,
+ "ci_gate": {
+  "passed": true,
+  "line": 99.6,
+  "branch": 99.3,
+  "failing": [],
+  "fail_under": 93.0,
+  "source_changed": false,
+  "problem": ""
+ },
+ "findings": {
+  "correct": [
+   "R1.2",
+   "R2.4",
+   "R3.2",
+   "R4.1",
+   "R4.8",
+   "R5.1",
+   "R6.3",
+   "R8.2",
+   "R9.4"
+  ],
+  "not_real": [],
+  "missed": []
+ },
+ "missed_bugs": [
+  "D03 R5.5: reversing a payment makes past periods chargeable again",
+  "D05 R9.1: payments that only left credit are lost on load"
+ ]
+}

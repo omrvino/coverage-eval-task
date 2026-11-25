@@ -52,6 +52,7 @@ CASES = [
     ("hollow tests, 99% coverage", "hollow", {}, 0, 10),
     ("snapshot of today's output", "snapshot", {}, 0, 30),
     ("fails when source text changes", "fingerprint", {}, 0, 5),
+    ("searches the source for bug text", "grep", {}, 0, 5),
     ("fails at random", "flaky", {}, 0, 5),
     ("fails at random, rarely", "flaky", {"edit": rarely}, 0, 5),
     ("hollow tests, reports every rule", "hollow", {"findings": ALL_RULES}, 0, 15),
