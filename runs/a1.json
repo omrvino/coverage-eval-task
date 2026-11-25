@@ -1,0 +1,67 @@
+{
+ "score": 85.9,
+ "points": {
+  "hidden_bugs": 18.6,
+  "deep_bugs": 10.4,
+  "shipped_bugs": 25.0,
+  "valid_tests": 8.0,
+  "ci_gate": 10.0,
+  "findings": 10.0,
+  "real_checks": 4.0
+ },
+ "share": {
+  "hidden_bugs": 0.929,
+  "deep_bugs": 0.519,
+  "shipped_bugs": 1.0,
+  "valid_tests": 0.795,
+  "ci_gate": 1.0,
+  "findings": 1.0,
+  "real_checks": 0.795
+ },
+ "tests": 268,
+ "invalid_tests": [],
+ "hollow_tests": [],
+ "ci_gate": {
+  "passed": true,
+  "line": 99.6,
+  "branch": 99.3,
+  "failing": [],
+  "fail_under": 93,
+  "source_changed": false,
+  "problem": ""
+ },
+ "findings": {
+  "correct": [
+   "R1.2",
+   "R2.4",
+   "R3.2",
+   "R4.1",
+   "R4.8",
+   "R5.1",
+   "R6.3",
+   "R8.2",
+   "R9.4"
+  ],
+  "not_real": [],
+  "missed": []
+ },
+ "missed_bugs": [
+  "H06 R1.4: negative weights allowed",
+  "H07 R2.3: a weekend that rolls onto a holiday stays on the holiday",
+  "H20 R3.6: paid while late fees are still owed",
+  "H50 R8.3: date checked before customer",
+  "D01 R4.8: a reversed payment still blocks the early-payment discount",
+  "D02 R3.7: cannot void after the only payment was reversed",
+  "D03 R5.5: reversing a payment makes past periods chargeable again",
+  "D05 R9.1: payments that only left credit are lost on load",
+  "D09 R5.3: fee rounded after adding the periods up",
+  "D10 R5.4: cap taken from the net, before tax",
+  "D13 R4.4: a second overpayment replaces the first credit",
+  "D14 R4.9: reversal allowed while only part of the credit is left",
+  "D17 R4.3: discount judged on the whole payment, not what reaches the invoice",
+  "D18 R4.3: only the first invoice in a payment can earn its discount",
+  "D23 R2.2: EOM from late January skips February",
+  "D24 R2.3: the ledger's holidays are not used when issuing",
+  "D25 R3.2: tax charged on the price before the line discount"
+ ]
+}

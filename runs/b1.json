@@ -1,0 +1,57 @@
+{
+ "score": 95.8,
+ "points": {
+  "hidden_bugs": 19.6,
+  "deep_bugs": 17.0,
+  "shipped_bugs": 25.0,
+  "valid_tests": 9.4,
+  "ci_gate": 10.0,
+  "findings": 10.0,
+  "real_checks": 4.7
+ },
+ "share": {
+  "hidden_bugs": 0.982,
+  "deep_bugs": 0.852,
+  "shipped_bugs": 1.0,
+  "valid_tests": 0.94,
+  "ci_gate": 1.0,
+  "findings": 1.0,
+  "real_checks": 0.935
+ },
+ "tests": 454,
+ "invalid_tests": [],
+ "hollow_tests": [
+  "test_terms.py::test_discount_edges_that_are_allowed"
+ ],
+ "ci_gate": {
+  "passed": true,
+  "line": 99.6,
+  "branch": 99.3,
+  "failing": [],
+  "fail_under": 93,
+  "source_changed": false,
+  "problem": ""
+ },
+ "findings": {
+  "correct": [
+   "R1.2",
+   "R2.4",
+   "R3.2",
+   "R4.1",
+   "R4.8",
+   "R5.1",
+   "R6.3",
+   "R8.2",
+   "R9.4"
+  ],
+  "not_real": [],
+  "missed": []
+ },
+ "missed_bugs": [
+  "H20 R3.6: paid while late fees are still owed",
+  "D01 R4.8: a reversed payment still blocks the early-payment discount",
+  "D03 R5.5: reversing a payment makes past periods chargeable again",
+  "D09 R5.3: fee rounded after adding the periods up",
+  "D11 R5.4: cap shrinks as the invoice is paid"
+ ]
+}

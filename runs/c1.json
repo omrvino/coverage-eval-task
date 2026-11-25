@@ -1,0 +1,49 @@
+{
+ "score": 100.0,
+ "points": {
+  "hidden_bugs": 20.0,
+  "deep_bugs": 20.0,
+  "shipped_bugs": 25.0,
+  "valid_tests": 10.0,
+  "ci_gate": 10.0,
+  "findings": 10.0,
+  "real_checks": 5.0
+ },
+ "share": {
+  "hidden_bugs": 1.0,
+  "deep_bugs": 1.0,
+  "shipped_bugs": 1.0,
+  "valid_tests": 1.0,
+  "ci_gate": 1.0,
+  "findings": 1.0,
+  "real_checks": 1.0
+ },
+ "tests": 586,
+ "invalid_tests": [],
+ "hollow_tests": [],
+ "ci_gate": {
+  "passed": true,
+  "line": 99.6,
+  "branch": 99.3,
+  "failing": [],
+  "fail_under": 93,
+  "source_changed": false,
+  "problem": ""
+ },
+ "findings": {
+  "correct": [
+   "R1.2",
+   "R2.4",
+   "R3.2",
+   "R4.1",
+   "R4.8",
+   "R5.1",
+   "R6.3",
+   "R8.2",
+   "R9.4"
+  ],
+  "not_real": [],
+  "missed": []
+ },
+ "missed_bugs": []
+}

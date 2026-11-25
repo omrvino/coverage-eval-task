@@ -1,0 +1,9 @@
+- R1.2: rounds half up; the spec says half to even
+- R2.4: the discount deadline rolls past weekends and holidays; the spec says it does not move
+- R3.2: tax is rounded per line; the spec says once, on the sum
+- R4.1: equal due dates are ordered as text; the spec compares digit runs as numbers
+- R4.8: reversing a payment leaves its early-payment discount; the spec says it is undone
+- R5.1: a fee is charged on day 5; the spec says from day 6
+- R6.3: credit reduces the newest bucket first; the spec says the oldest
+- R8.2: line numbers skip blank lines; the spec counts them
+- R9.4: a file that is not UTF-8 raises UnicodeDecodeError; the spec says StoreError
